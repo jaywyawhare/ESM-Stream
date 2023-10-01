@@ -10,7 +10,7 @@ def render_mol(pdb):
     pdbview = py3Dmol.view()
     pdbview.addModel(pdb,'pdb')
     pdbview.setStyle({'cartoon':{'color':'spectrum'}})
-    pdbview.setBackgroundColor('white')#('0xeeeeee')
+    pdbview.setBackgroundColor('white')
     pdbview.zoomTo()
     pdbview.zoom(2, 800)
     pdbview.spin(True)
@@ -24,6 +24,10 @@ def update(sequence=txt):
         'Content-Type': 'application/x-www-form-urlencoded',
     }
     response = requests.post('https://api.esmatlas.com/foldSequence/v1/pdb/', headers=headers, data=sequence)
+    if response.status_code != 200:
+        st.warning("Unable to predict protein structure. Please try again later.")
+        return
+    
     name = sequence[:3] + sequence[-3:]
     pdb_string = response.content.decode('utf-8')
 
